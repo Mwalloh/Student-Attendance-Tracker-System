@@ -2,8 +2,8 @@ import json
 import os
 
 #StudentManager defines the blueprint for management object
-#Intializes the manager with a specific file path
-class student_manager:
+#Initializes the manager with a specific file path
+class StudentManager:
     #runs the moment an instance is created and data is stored in the data.json so all files search there
     def __init__(self, data_path='data/data.json'):
         self.data_path = data_path 
@@ -19,7 +19,7 @@ class student_manager:
             with open(self.data_path, 'r') as f:
                 #convert given text to JSON file into a list of dicts
                 return json.load(f)
-            #Incase of any corruption in the file return an empty list
+            #In case of any corruption in the file return an empty list
         except (json.JSONDecodeError, FileNotFoundError):
             return []
         
@@ -39,15 +39,17 @@ class student_manager:
         #forces MAC addresses to lowercase
         mac_lower = mac_address.lower()
          
-        #Loop to check the MAC addresses existance
+        #Loop to check the MAC addresses existence
         if any(student['mac_address'] == mac_lower for student in students):
             #use of any to return True if a value within the object comes as true
-            return "Error: MAC Address already Exists"
+            print("❌ Error: MAC Address already Exists ❌")
+            return
         
         #appending by adding the name and mac address to the list as a dict
         students.append({"name": name, "mac_address": mac_lower})
         self.save_data(students) 
-        return f"Student {name} added successfully."
+        print(f"🎉 Student {name} added successfully. 🎊")
+        return
     
 #----------->Delete student
     def delete_student(self, name, mac_address):
@@ -55,17 +57,20 @@ class student_manager:
         students = self.load_data()
         #forces MAC addresses to lowercase
         mac_lower = mac_address.lower()
+        name_lower = name.lower()
 
         #List comprehension to create a new list excluding the specific student
-        updated_list = [s for s in students if not (s['name'] == name and s['mac_address'] == mac_lower)]
+        updated_list = [s for s in students if not (s['name'].lower() == name_lower and s['mac_address'].lower() == mac_lower)]
 
         #Check if the list size changed to verify deletion
         if len(updated_list) == len(students):
-            return "Student not Found."
+            print("😡 Student Not Found. 👀")
+            return
         
         #Save the updated list back to JSON
         self.save_data(updated_list)
-        return f"Student {name} removed succesfully :)"
+        print(f"😰 Student {name.capitalize()} removed successfully :) 😁") 
+        return
     
 #----------->Update student data
     def update_student(self, current_name, new_name=None, new_mac=None):
@@ -75,7 +80,7 @@ class student_manager:
 
         #Loop through the students to find the match by name
         for student in students:
-            if student['name'] == current_name:
+            if student['name'].lower() == current_name.lower():
                 #If a new name or mac is provided, update the specific field
                 if new_name: student['name'] = new_name
                 if new_mac: student['mac_address'] = new_mac.lower()
@@ -85,8 +90,11 @@ class student_manager:
         #If found, save changes; otherwise return error
         if found:
             self.save_data(students)
-            return f"Student {current_name} updated successfully."
-        return "Student not Found."
+            print(f"🤯 Student {current_name.capitalize()} updated successfully. 😇")
+            return
+        
+        print("😞 Student not Found. 💔") 
+        return
     
 
 
