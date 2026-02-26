@@ -1,78 +1,77 @@
 import json
 import os
 
-# File path where attendance data is stored
-ATTENDANCE_FILE = "data/attendance.json"
-
-
-def load_attendance():
+class AttendanceTracker:
     """
-    Loads attendance records from the JSON file.
-    Returns an empty list if the file does not exist or is empty.
+    Attendance tracker class that handles loading, saving, and marking attendance.
     """
-    # Check if the attendance file exists
-    if not os.path.exists(ATTENDANCE_FILE):
-        # Return empty list if file is missing
-        return []
-    
-    # Open the file in read mode
-    with open(ATTENDANCE_FILE, "r") as file:
-        # Load JSON data and return it as a Python list
-        return json.load(file)
+    def __init__(self, attendance_file="data/attendance.json"):
+        self.attendance_file = attendance_file
+        self.attendance = self.load_attendance()
+        #  Initialize attendance list from file on startup
 
+    def load_attendance(self):
+        """
+        Loads attendance records from the JSON file.
+        Returns an empty list if the file does not exist or is empty.
+        """
+        if not os.path.exists(self.attendance_file):
+            # If the file doesn't exist yet, return empty list
+            return []
+        with open(self.attendance_file, "r") as file:
+            #it reads the file and converts json text into python data
+            try:
+                return json.load(file)
+            except json.JSONDecodeError:
+                # Handle empty or corrupt JSON file preventing the program from stopping
+                return []
 
-def save_attendance(data):
-    """
-    Saves the attendance records to the JSON file.
-    """
-    # Open the file in write mode
-    with open(ATTENDANCE_FILE, "w") as file:
-        # Convert Python list/dict to JSON and save
-        json.dump(data, file, indent=4)
+    def save_attendance(self):
+        """
+        Saves the current attendance list to the JSON file.
+        """
+        os.makedirs(os.path.dirname(self.attendance_file), exist_ok=True)
+        # Ensure the data folder exists before saving
+        with open(self.attendance_file, "w") as file:
+            json.dump(self.attendance, file, indent=4)
+            # Save attendance list to JSON nicely formatted
 
+    def mark_present(self, name, mac):
+        """
+        Marks a student as present based on their name and MAC address.
+        Returns a status message.
+        """
+        for student in self.attendance:
+            if student["mac"] == mac:
+                # Check if this MAC is already recorded
+                return f"{name} is already marked present."
 
-def mark_present(name, mac):
-    # Load existing attendance data
-    attendance = load_attendance()
+        new_record = {
+            "name": name,
+            "mac": mac,
+            "status": "Present"  # <-- Updated from is_present: True
+        }
+        self.attendance.append(new_record)
+        # Add new record to the attendance list
+        self.save_attendance()
+        # Save updated attendance to file
+        return f"{name} marked present successfully."
 
-    # Loop through existing records to check for duplicates
-    for student in attendance:
-        if student["mac"] == mac:
-            # Return message if student is already marked present
-            return "Student already marked present."
+    def get_present_students(self):
+        """
+        Returns a list of names of students who are marked present.
+        """
+        # Gather names where status is 'Present'
+        return [student["name"] for student in self.attendance if student.get("status") == "Present"]
 
-    # Create a new attendance record
-    new_record = {
-        "name": name,
-        "mac": mac,
-        "is_present": True
-    }
+    def mark_from_scanner(self, scanned_macs, student_db):
+        """
+        Automatically marks present students based on scanned MAC addresses.
 
-    # Add the new record to the list
-    attendance.append(new_record)
-
-    # Save updated attendance data
-    save_attendance(attendance)
-
-    # Return confirmation message
-    return "Student marked present successfully."
-
-
-def get_present_students():
-    """
-    Returns a list of names of students who are marked present.
-    """
-    # Load attendance data
-    attendance = load_attendance()
-
-    # Initialize list for present students
-    present_students = []
-
-    # Loops through each record and check if the student is present
-    for student in attendance:
-        if student.get("is_present") == True:
-            # Add student name to present list
-            present_students.append(student["name"])
-
-    # Return the list of present students
-    return present_students
+        scanned_macs: list of MAC addresses detected by scanner
+        student_db: list of dictionaries with 'name' and 'mac' keys for all students
+        """
+        # Loop through all students and mark those whose MAC is in scanned_macs
+        for student in student_db:
+            if student["mac"] in scanned_macs:
+                self.mark_present(student["name"], student["mac"])
