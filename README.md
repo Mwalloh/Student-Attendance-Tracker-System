@@ -102,18 +102,20 @@ This reinforces file-handling fundamentals and modular design.
 ## How To Run
 
 1.  Clone the repository:
-
+    ```
     git clone
     https://github.com/Mwalloh/Student-Attendance-Tracker-System.git
-
+    ```
+    
 2.  Navigate into the project directory:
-
+    ```
     cd Student-Attendance-Tracker-System
-
+    ```
+    
 3.  Run the program:
-
+    ```
     python main.py
-
+    ```
 ## Limitations
 
 - MAC address spoofing is possible
