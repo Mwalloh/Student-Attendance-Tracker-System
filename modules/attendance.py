@@ -1,77 +1,59 @@
 import json
 import os
+from modules.scanner import NetworkScanner
 
 class AttendanceTracker:
     """
     Attendance tracker class that handles loading, saving, and marking attendance.
     """
-    def __init__(self, attendance_file="data/attendance.json"):
+    def __init__(self, data_file="data/data.json", attendance_file = "data/attendance.json"):
+        self.data_file = data_file
         self.attendance_file = attendance_file
-        self.attendance = self.load_attendance()
-        #  Initialize attendance list from file on startup
 
-    def load_attendance(self):
-        """
-        Loads attendance records from the JSON file.
-        Returns an empty list if the file does not exist or is empty.
-        """
-        if not os.path.exists(self.attendance_file):
-            # If the file doesn't exist yet, return empty list
-            return []
-        with open(self.attendance_file, "r") as file:
-            #it reads the file and converts json text into python data
-            try:
-                return json.load(file)
-            except json.JSONDecodeError:
-                # Handle empty or corrupt JSON file preventing the program from stopping
-                return []
-
-    def save_attendance(self):
+    def save_attendance(self, students):
         """
         Saves the current attendance list to the JSON file.
         """
         os.makedirs(os.path.dirname(self.attendance_file), exist_ok=True)
         # Ensure the data folder exists before saving
         with open(self.attendance_file, "w") as file:
-            json.dump(self.attendance, file, indent=4)
+            json.dump(students, file, indent=4)
             # Save attendance list to JSON nicely formatted
 
-    def mark_present(self, name, mac):
-        """
-        Marks a student as present based on their name and MAC address.
-        Returns a status message.
-        """
-        for student in self.attendance:
-            if student["mac"] == mac:
-                # Check if this MAC is already recorded
-                return f"{name} is already marked present."
+    def load_data(self):
+        with open(self.data_file, "r") as file:
+            data = json.load(file)
+            return data
+            
+    
+    def mark_present(self, net_range="192.168.0.0/24"):
+        student_data = self.load_data()  
+        scanner = NetworkScanner(net_range)  
+        devices = scanner.scan() 
 
-        new_record = {
-            "name": name,
-            "mac": mac,
-            "status": "Present"  # <-- Updated from is_present: True
-        }
-        self.attendance.append(new_record)
-        # Add new record to the attendance list
-        self.save_attendance()
-        # Save updated attendance to file
-        return f"{name} marked present successfully."
+       #I put the loop thru devices outside to make work clearer 
+        online_macs = {device['mac']for device in devices}
+        
+        #  Initialize an empty list to collect students found during this specific scan
+        present_students = []
 
-    def get_present_students(self):
-        """
-        Returns a list of names of students who are marked present.
-        """
-        # Gather names where status is 'Present'
-        return [student["name"] for student in self.attendance if student.get("status") == "Present"]
+        # We iterate through student database one by one.
+        for student in student_data:
+            
+            if student["mac_address"] in online_macs:
+                student["status"] = "Present"
+                present_students.append(student)                
+                print(f"Student Found: {student.get('name', 'Student')} is present.")
+        # Saving the results:)
+        # If the list isn't empty save it to attendance.json.
+        if present_students:
+            self.save_attendance(present_students)
+        else:
+            print("Scan complete: No matching students found on this network.")
 
-    def mark_from_scanner(self, scanned_macs, student_db):
-        """
-        Automatically marks present students based on scanned MAC addresses.
-
-        scanned_macs: list of MAC addresses detected by scanner
-        student_db: list of dictionaries with 'name' and 'mac' keys for all students
-        """
-        # Loop through all students and mark those whose MAC is in scanned_macs
-        for student in student_db:
-            if student["mac"] in scanned_macs:
-                self.mark_present(student["name"], student["mac"])
+# if __name__ == "__main__":
+#     tracker = AttendanceTracker()
+    
+    
+#     print("Starting Attendance Scan...")
+#     tracker.mark_present(net_range="192.168.0.0/24")
