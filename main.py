@@ -1,11 +1,26 @@
 # Import scanner_function from modules.scanner.py
 # Import 'json'
+from json import JSONDecodeError
+from modules.scanner import NetworkScanner
+from modules.utils import NetworkUtils
 import json
 from modules.student import StudentManager
+from modules.attendance import AttendanceTracker
+
+
 class Main:
     def __init__(self):
-        pass
-    
+         # Emojis for better UI experience ;)
+         print("System Starting...")
+
+         print("\nDetecting network range...")
+         self.net_range = NetworkUtils.get_local_network()
+         print(self.net_range)
+
+         # self.scanner = NetworkScanner(self.net_range)
+         self.tracker = AttendanceTracker()
+         self.tracker.mark_present(net_range=self.net_range)
+
     def main(self):
         print("\n")
         print("\t-------🌍STUDENT ATTENDANCE TRACKER🌍-------")
@@ -52,7 +67,7 @@ class Main:
                 else :
                     break
         
-            # Parse the data & mac-address to the the 'create_account_function'
+            # Parse the data & mac-address to the 'create_account_function'
             student = StudentManager()
             student.create_student(name, mac_address)
             self.main()
@@ -64,16 +79,19 @@ class Main:
                 print("✅----------------PRESENT STUDENTS-----------------✅")
                 with open("data/attendance.json", "r") as file:
                     data = json.load(file)
-                    for person in data:
-                            print(f"📌 {person['name']}")
+                    if not data:
+                        print(f"No students found.")
                     else:
-                            print("😱 Students absent. 😱")
-                            self.main()
-                            
-                
-            except:
-                print("🚩 No present students. 🛑")
+                        for person in data:
+                                print(f"📌 {person['name']} - {person['status']}")
                 self.main()
+                        # else:
+                        #      print("😱 Students absent. 😱")
+                        #      self.main()
+            except:
+                print("File not found.")
+                self.main()
+
 
         # OPTION 3
         elif option == "3":

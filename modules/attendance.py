@@ -6,7 +6,7 @@ class AttendanceTracker:
     """
     Attendance tracker class that handles loading, saving, and marking attendance.
     """
-    def __init__(self, data_file="data/data.json", attendance_file = "data/attendance.json"):
+    def __init__(self, data_file = "data/data.json", attendance_file = "data/attendance.json"):
         self.data_file = data_file
         self.attendance_file = attendance_file
 
@@ -28,11 +28,11 @@ class AttendanceTracker:
     
     def mark_present(self, net_range=None):
         student_data = self.load_data()  
-        scanner = NetworkScanner(net_range)  
+        scanner = NetworkScanner(net_range)
         devices = scanner.scan() 
 
        #I put the loop through devices outside to make work clearer
-        online_macs = {device['mac']for device in devices}
+        online_macs = {device['mac'] for device in devices}
         
         #  Initialize an empty list to collect students found during this specific scan
         present_students = []
@@ -42,8 +42,7 @@ class AttendanceTracker:
             
             if student["mac_address"] in online_macs:
                 student["status"] = "Present"
-                present_students.append(student)                
-                print(f"Student Found: {student.get('name', 'Student')} is present.")
+                present_students.append(student)
         # Saving the results:)
         # If the list isn't empty save it to attendance.json.
         if present_students:

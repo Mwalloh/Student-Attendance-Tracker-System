@@ -1,1 +1,12 @@
-[]
+[
+    {
+        "name": "Mary Jane",
+        "mac_address": "78:17:be:1b:6b:b1",
+        "status": "Present"
+    },
+    {
+        "name": "Jim Mwalloh",
+        "mac_address": "e0:2b:e9:15:84:52",
+        "status": "Present"
+    }
+]

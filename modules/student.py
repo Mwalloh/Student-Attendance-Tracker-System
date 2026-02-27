@@ -8,7 +8,7 @@ class StudentManager:
     def __init__(self, data_path='data/data.json'):
         self.data_path = data_path 
 
-#------------->Load Data From Json File
+#------------->Load Data From JSON File
 #Internal helper to load student data
     def load_data(self):
         #checks if data.json exists if it doesn't create an empty list

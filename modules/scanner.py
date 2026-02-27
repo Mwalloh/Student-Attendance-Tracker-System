@@ -31,18 +31,19 @@ class NetworkScanner:
 
         return devices
 
-if __name__ == "__main__":
-    
-    network = "192.168.100.37/24"
-    scanner = NetworkScanner(network)
-    
-    print(f"Scanning {network} on interface {real_iface}...")
-    devices = scanner.scan()
-    
-  
-    if not devices:
-        print("No devices found. Ensure you are running with 'sudo'.")
-    else:
-        print(f"Found {len(devices)} devices:")
-        for device in devices:
-            print(f" MAC: {device['mac']}")
+
+# if __name__ == "__main__":
+#
+#     network = "192.168.100.37/24"
+#     scanner = NetworkScanner(network)
+#
+#     print(f"Scanning {network} on interface {real_iface}...")
+#     connected_devices = scanner.scan()
+#
+#
+#     if not connected_devices:
+#         print("No devices found. Ensure you are running with 'sudo'.")
+#     else:
+#         print(f"Found {len(connected_devices)} devices:")
+#         for device in connected_devices:
+#             print(f" MAC: {device['mac']}")
