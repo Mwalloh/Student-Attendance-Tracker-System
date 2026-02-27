@@ -31,7 +31,7 @@ class AttendanceTracker:
         scanner = NetworkScanner(net_range)  
         devices = scanner.scan() 
 
-       #I put the loop thru devices outside to make work clearer 
+       #I put the loop through devices outside to make work clearer
         online_macs = {device['mac']for device in devices}
         
         #  Initialize an empty list to collect students found during this specific scan
