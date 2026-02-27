@@ -27,38 +27,26 @@ class AttendanceTracker:
             
     
     def mark_present(self, net_range=None):
-        if net_range is None:
-            net_range = NetworkUtils.get_local_network()
-            print(f"Auto-detected network: {net_range}")
-
         student_data = self.load_data()  
         scanner = NetworkScanner(net_range)  
         devices = scanner.scan() 
 
-        online_macs = {device['mac'].lower() for device in devices}
+       #I put the loop thru devices outside to make work clearer 
+        online_macs = {device['mac']for device in devices}
+        
+        #  Initialize an empty list to collect students found during this specific scan
         present_students = []
 
+        # We iterate through student database one by one.
         for student in student_data:
-            if student["mac_address"].lower() in online_macs:
+            
+            if student["mac_address"] in online_macs:
                 student["status"] = "Present"
                 present_students.append(student)                
-                print(f"{student.get('name')} is present.")
-
+                print(f"Student Found: {student.get('name', 'Student')} is present.")
+        # Saving the results:)
+        # If the list isn't empty save it to attendance.json.
         if present_students:
             self.save_attendance(present_students)
         else:
-            print("Scan complete: No students found.")
-
-# if __name__ == "__main__":
-#     tracker = AttendanceTracker()
-    
-#     detected_range = NetworkUtils.get_local_network()
-#     print(f"Current Network Detected: {detected_range}")
-    
-#     choice = input("Use this range? (y/n): ").lower()
-    
-#     if choice == 'y':
-#         tracker.mark_present(net_range=detected_range)
-#     else:
-#         custom_range = input("Enter custom network range (e.g. 192.168.1.0/24): ")
-#         tracker.mark_present(net_range=custom_range)
+            print("Scan complete: No matching students found on this network.")
