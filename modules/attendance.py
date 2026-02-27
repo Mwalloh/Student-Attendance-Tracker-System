@@ -26,7 +26,7 @@ class AttendanceTracker:
             return data
             
     
-    def mark_present(self, net_range="192.168.0.0/24"):
+    def mark_present(self, net_range=None):
         student_data = self.load_data()  
         scanner = NetworkScanner(net_range)  
         devices = scanner.scan() 
@@ -50,10 +50,3 @@ class AttendanceTracker:
             self.save_attendance(present_students)
         else:
             print("Scan complete: No matching students found on this network.")
-
-# if __name__ == "__main__":
-#     tracker = AttendanceTracker()
-    
-    
-#     print("Starting Attendance Scan...")
-#     tracker.mark_present(net_range="192.168.0.0/24")
