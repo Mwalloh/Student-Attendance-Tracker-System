@@ -45,7 +45,9 @@ Stop taking manual roll calls. This system automatically marks students
 ### 1️⃣ Clone the Repository
 
 ``` bash
-https://github.com/Mwalloh/Student-Attendance-Tracker-System
+git clone https://github.com/Mwalloh/Student-Attendance-Tracker-System
+```
+```bash
 cd attendance-tracker
 ```
 
@@ -97,7 +99,7 @@ sudo python3 main.py
 ## 🎨 Preview
 
 ``` plaintext
--------🌍 STUDENT ATTENDANCE TRACKER 🌍-------
+        -------🌍 STUDENT ATTENDANCE TRACKER 🌍-------
 ⭐----------------------⭐ WELCOME ⭐----------------------⭐
 
 Choose an option:
