@@ -1,142 +1,110 @@
-# Student Attendance Tracker System
+# 🎓 Student Attendance Tracker
 
-A modular Python-based network-driven attendance management system that
-automatically marks students present using their device MAC addresses.
+### Automated Network-Based Presence Detection
 
-Repository: https://github.com/Mwalloh/Student-Attendance-Tracker-System
+Stop taking manual roll calls. This system automatically marks students
+**"Present"** by scanning the local network for their device's unique
+**MAC Address**.
 
-## Team Members
+------------------------------------------------------------------------
 
-- Kimberley Madoya
-- Ryan Ayunda
-- Ratib Khalfah
-- Jim Mwalloh
+## 🌟 Key Features
 
-## Project Concept
+-   📡 **ARP Network Scanning** -- High-speed device discovery using
+    Scapy.\
+-   👤 **Student CRUD** -- Full management of student profiles (Create,
+    Read, Update, Delete).\
+-   🔍 **Auto-Network Discovery** -- Automatically detects your IP range
+    and subnet mask.\
+-   📂 **Data Persistence** -- Uses structured JSON for easy data
+    portability.\
+-   🖥️ **Interactive CLI** -- A user-friendly emoji-driven command-line
+    interface.
 
-This system automates attendance by:
+------------------------------------------------------------------------
 
-1.  Scanning the network
-2.  Detecting connected MAC addresses
-3.  Comparing them with registered student records
-4.  Automatically marking matching students as Present
+## 📂 Project Architecture
 
-## Project Structure
+``` bash
+.
+├── main.py                # 🚀 Application Entry Point
+├── data/                  # 🗄️ Database Folder
+│   ├── attendance.json    # ✅ Latest Scan Results
+│   └── data.json          # 👥 Registered Student Database
+└── modules/               # ⚙️ Core Logic
+    ├── attendance.py      # Logic for marking presence
+    ├── scanner.py         # ARP Packet scanning engine
+    ├── student.py         # Student record management
+    └── utils.py           # Network interface utilities
+```
 
-├── data │ ├── attendance.json │ └── data.json ├── main.py └── modules
-├── attendance.py ├── scanner.py └── student.py
+------------------------------------------------------------------------
 
-## Module Breakdown
+## 🛠️ Installation & Setup
 
-### scanner.py
+### 1️⃣ Clone the Repository
 
-Responsibility: Network detection
+``` bash
+https://github.com/Mwalloh/Student-Attendance-Tracker-System
+cd attendance-tracker
+```
 
-- Works independently without internal project imports
-- Scans the network
-- Returns a list of connected MAC addresses
+### 2️⃣ Install Dependencies
 
-### attendance.py
+This project requires **scapy** for packet manipulation and
+**netifaces** for network detection.
 
-Responsibility: Attendance processing
+``` bash
+pip install scapy netifaces
+```
 
-- Imports student records from data/data.json
-- Calls the scanner function
-- Compares detected MAC addresses with stored records
-- Marks matched students as Present
-- Saves results to data/attendance.json
+------------------------------------------------------------------------
 
-### student.py
+## ⚡ How to Run
 
-Responsibility: Student management (CRUD operations)
+> ⚠️ **Root Privileges Required**\
+> Since the program performs raw network scans (ARP), it must be
+> executed with sudo.
 
-Features:
+``` bash
+sudo python3 main.py
+```
 
-- Create student accounts
-- Delete student accounts
-- Update student information
+------------------------------------------------------------------------
 
-Each student record contains:
+## 📖 System Workflow
 
-{ "name": "Student Name", "mac_address": "AA:BB:CC:DD:EE:FF" }
+  ------------------------------------------------------------------------
+  Step            Action                    Description
+  --------------- ------------------------- ------------------------------
+  1️⃣              Scan                      The system identifies your
+                                            local network (e.g.,
+                                            192.168.1.0/24).
 
-### main.py (Entry Point)
+  2️⃣              Detect                    It sends ARP requests to find
+                                            all active MAC addresses.
 
-Acts as the CLI controller.
+  3️⃣              Compare                   It matches discovered MACs
+                                            against your student database.
 
-Available options:
+  4️⃣              Log                       Matches are written to
+                                            `attendance.json` with a
+                                            "Present" status.
+  ------------------------------------------------------------------------
 
-- Create student account
-- View present students
-- Delete student
-- Update student data
-- Exit the System
+------------------------------------------------------------------------
 
-## Data Storage Strategy
+## 🎨 Preview
 
-This project uses JSON for lightweight persistence:
+``` plaintext
+-------🌍 STUDENT ATTENDANCE TRACKER 🌍-------
+⭐----------------------⭐ WELCOME ⭐----------------------⭐
 
-- data.json stores registered students
-- attendance.json stores detected present students
+Choose an option:
+1. Create Student Account
+2. View Present Students
+3. Delete Student Account
+4. Update Student Data
+5. Exit
+```
 
-This reinforces file-handling fundamentals and modular design.
-
-## Technical Skills Demonstrated
-
-- Modular Python architecture
-- Separation of concerns
-- JSON serialization and deserialization
-- File I/O handling
-- CLI application design
-- Data comparison algorithms
-- Clean project structuring
-
-## System Workflow
-
-1.  Admin registers students (name and MAC address)
-2.  Scanner detects connected devices
-3.  Attendance module compares data
-4.  Matching MAC addresses are marked Present
-5.  Results are stored in attendance.json
-
-## How To Run
-
-1.  Clone the repository:
-    ```
-    git clone
-    https://github.com/Mwalloh/Student-Attendance-Tracker-System.git
-    ```
-    
-2.  Navigate into the project directory:
-    ```
-    cd Student-Attendance-Tracker-System
-    ```
-    
-3.  Run the program:
-    ```
-    python main.py
-    ```
-## Limitations
-
-- MAC address spoofing is possible
-- Works only within the same network
-- No authentication system yet
-- JSON is not ideal for large-scale production systems
-
-## Future Improvements
-
-- Add SQLite database integration
-- Implement admin authentication
-- Add logging system
-- Improve scanner reliability
-- Implement unit testing
-- Add a GUI or web interface
-- Containerize with Docker
-
-## Learning Outcomes
-
-- Real-world problem modeling
-- Modular code organization
-- Data persistence without databases
-- Collaboration using Git and GitHub
-- Designing scalable system structure
