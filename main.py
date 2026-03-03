@@ -210,5 +210,5 @@ class Main:
             print("❌ Invalid option. ❌")
             self.main()
 
-__main__ = Main()
-__main__.main()
+if __name__ == "__main__":
+    Main().main()
