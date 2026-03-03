@@ -1,6 +1,12 @@
+#ARP ----> Address Resource Protocol 
+           # create packets
+#Ether -----> Creates ethernet frames
+#srp-----> replies in a 2 layer packets
+#conf -----> Accesses scapy conf
+
 from scapy.all import ARP, Ether, srp, conf, get_if_addr , get_if_hwaddr
 
-
+#Scapy detect the latest network range in a given route
 conf.route.resync()
 
 real_iface = conf.route.route("0.0.0.0")[0]
@@ -10,19 +16,24 @@ class NetworkScanner:
         
         self.network_range = network_range
 
-    def scan(self) -> list:
+    def scan(self):
+        # get all available devices
         arp_request = ARP(pdst=self.network_range)
+        #packet form in the MAC format
         broadcast = Ether(dst="ff:ff:ff:ff:ff:ff")
+        # IP address in the given ARP request
         packet = broadcast / arp_request
         
-        
+        #Give the MAC Addresses of each device
         answered, _ = srp(packet, timeout=2, verbose=False, iface=real_iface)
-
+        #Set devices to an empty list
         devices = []
+        #loop to display all connected devices
         for _, response in answered:
-            
+            #Push to the empty list
             devices.append({ 'mac': response.hwsrc})
-
+        #Testing purposes
+        #To use our devices to see if the code runs
         my_mac = get_if_hwaddr(real_iface)
         my_ip = get_if_addr(real_iface)
 
