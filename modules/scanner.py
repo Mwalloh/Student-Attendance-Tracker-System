@@ -44,14 +44,14 @@ class NetworkScanner:
 
 
 # if __name__ == "__main__":
-#
+
 #     network = "192.168.100.37/24"
 #     scanner = NetworkScanner(network)
-#
+
 #     print(f"Scanning {network} on interface {real_iface}...")
 #     connected_devices = scanner.scan()
-#
-#
+
+
 #     if not connected_devices:
 #         print("No devices found. Ensure you are running with 'sudo'.")
 #     else:

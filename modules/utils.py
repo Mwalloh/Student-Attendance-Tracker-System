@@ -4,7 +4,7 @@ import ipaddress
 import netifaces
 
 class NetworkUtils:
-    #Refering to any object...
+    # Refers to a method that doesn't work on any class attr or instance attr
     @staticmethod
 
     #get network range
@@ -29,3 +29,6 @@ class NetworkUtils:
         except Exception:
             #Hardware IP Address that is used in alll devices connected to a network
             return "192.168.0.0/24"
+
+# range = NetworkUtils()
+# print(range.get_local_network())

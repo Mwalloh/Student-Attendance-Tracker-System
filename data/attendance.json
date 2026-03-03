@@ -8,5 +8,10 @@
         "name": "Jim Mwalloh",
         "mac_address": "e0:2b:e9:15:84:52",
         "status": "Present"
+    },
+    {
+        "name": "Jason Statham",
+        "mac_address": "04:8c:9a:3f:3f:59",
+        "status": "Present"
     }
 ]
